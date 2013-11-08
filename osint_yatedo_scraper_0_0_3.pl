@@ -12,13 +12,13 @@
 ############################################################
 
 # This script will scrape yatedo search results for a specific company
-## tbd
+## TBD
 ## handle timeouts
-## finish help file
-## help and command line options
+## finish help file DONE!
+## help and command line options DONE!
 ## clean up
 ## correct link account for additional results pages
-## hard code www.yatedo.com DONE
+## hard code www.yatedo.com DONE!
 ## write results to file
 ## improve look of output
 ## functionalize everything
@@ -44,7 +44,7 @@ my $target_site = "www.yatedo.com";
 
 # command line options
 my $help;
-my $keyword;
+my $keyword;  #keyword or target organization
 my $range=10; #range for random sleep times
 
 # processing command line options
@@ -56,32 +56,26 @@ my $result = GetOptions (
 			
 help()                   if $help;
 
-#global variables
-	#my $range = 10; #range for random sleep times
-
 #check to make sure the keyword is provided
-#my $keyword_check = length $keyword;
-print "\n[*]	Validating keyword/organization ...\n";
+print "\n[*] Validating keyword/organization ...\n";
 if ( defined $keyword ) {
 	print "\n";
-	
 	} else {
-	die("\n[*]	ERROR. please provide a reasonable keyword or organization. Use -h for help \n\n");
+	die("\n[*] ERROR. please provide a reasonable keyword or organization. Use -h for help \n\n");
 	}
 
 #check to make sure the sleep time is valid
-print "[*]	Validating sleep time ...\n";
+print "[*] Validating sleep time ...\n";
 if ( $range >= 0 ) {
-	
 	} else {
-	die("\n[*]	ERROR. please provide a reasonable sleep time. Use -h for help \n\n");
+	die("\n[*] ERROR. please provide a reasonable sleep time. Use -h for help \n\n");
 	}
 
 #read out the keyword
-print "[*]	Keyword entered \"$keyword\". \n";
+print "[*] Keyword entered \"$keyword\". \n";
 
 #read out the sleep time
-print "[*]	Sleep times will be between 0 and $range. \n";
+print "[*] Sleep times will be between 0 and $range. \n";
 
 #request frontpage
 ## initialize variables
@@ -403,7 +397,7 @@ Options:
 		-help		This screen.
 		-keyword	This is the keyword/organization that will be submitted with the Yatedo query
 		-sleep		This is the range in seconds that will be used to generate a random delay to 
-				avoid lockout. 
+				avoid lockout. The default value is 10.
 
 Example:
 
