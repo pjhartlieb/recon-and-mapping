@@ -53,7 +53,7 @@ if (-e $filename) {
 
 #check to make sure the domain is formatted correctly
 if ( $domain =~ m/^([a-zA-Z0-9\-]{1,}\.){1,}[a-zA-Z0-9\-]{1,}$/ ) {
-	print "[*]	Domain appeares to be formatted correctly. Proceeding\n\n";
+	print "[*]	Domain appears to be formatted correctly. Proceeding\n\n";
 } else {
 	die("[*]	ERROR. Please provide a valid domain. Use -h for help \n\n");	
 }
