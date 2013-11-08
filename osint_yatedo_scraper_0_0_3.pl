@@ -8,6 +8,8 @@
 
 # This script will scrape yatedo search results for a specific company
 ## tbd
+## handle timeouts
+## finish help file
 ## help and command line options
 ## clean up
 ## correct link account for additional results pages
