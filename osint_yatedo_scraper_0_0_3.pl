@@ -1,10 +1,15 @@
 #!/usr/bin/perl
 
-#########################################
-# osint_yatedo_scraper v0.0.3 - Dev 09/12/2013
-# By pjhartlieb
-# http://pjhartlieb.blogspot.com
-#########################################
+############################################################
+##
+##		osint_yatedo_scraper_v_0_0_3.pl
+##		
+##		Quickly gather contacts for a target organization or
+##		keyword.
+##		
+##		by pjhartlieb @ black lantern security group 
+##
+############################################################
 
 # This script will scrape yatedo search results for a specific company
 ## tbd
@@ -34,24 +39,49 @@ use HTML::Tree;
 use LWP::Simple;
 use Getopt::Long;
 
+#global variables
+my $target_site = "www.yatedo.com";
+
 # command line options
 my $help;
-#my $delay = 0;
-#my $dns;
+my $keyword;
+my $range=10; #range for random sleep times
 
 # processing command line options
 my $result = GetOptions (	
 			'help'		=> \$help,
+			'keyword=s'	=> \$keyword,
+			'sleep:i'	=> \$range,
 			); 
 			
 help()                   if $help;
 
 #global variables
-	my $range = 10; #range for random sleep times
+	#my $range = 10; #range for random sleep times
 
-#define end user arguments
-	my $target_site = "www.yatedo.com";
-	my $keyword = $ARGV[0];
+#check to make sure the keyword is provided
+#my $keyword_check = length $keyword;
+print "\n[*]	Validating keyword/organization ...\n";
+if ( defined $keyword ) {
+	print "\n";
+	
+	} else {
+	die("\n[*]	ERROR. please provide a reasonable keyword or organization. Use -h for help \n\n");
+	}
+
+#check to make sure the sleep time is valid
+print "[*]	Validating sleep time ...\n";
+if ( $range >= 0 ) {
+	
+	} else {
+	die("\n[*]	ERROR. please provide a reasonable sleep time. Use -h for help \n\n");
+	}
+
+#read out the keyword
+print "[*]	Keyword entered \"$keyword\". \n";
+
+#read out the sleep time
+print "[*]	Sleep times will be between 0 and $range. \n";
 
 #request frontpage
 ## initialize variables
@@ -371,13 +401,14 @@ Overview:
 Options:
 	
 		-help		This screen.
-		-keyword	This is the keyword that will be submitted with the Yatedo query
-		-sleep		This is the range in seconds that will be used to generate a random
-					delay to avoid lockout. 
+		-keyword	This is the keyword/organization that will be submitted with the Yatedo query
+		-sleep		This is the range in seconds that will be used to generate a random delay to 
+				avoid lockout. 
 
 Example:
 
-		perl osint_yatedo_scraper.pl www.yatedo.com walmart
+		perl osint_yatedo_scraper.pl -keyword walmart -sleep 5
+		perl osint_yatedo_scraper.pl -keyword "five guys" -sleep 5
 	 
 EOHELP
 exit;
