@@ -13,6 +13,7 @@
 
 # This script will scrape yatedo search results for a specific company
 ## TBD
+## **need** to catch errors using eval.  right now it will shit the bed if mech cannot connect
 ## correct link account for additional results pages
 ## write results to file
 ## improve look of output
@@ -58,6 +59,10 @@ help()                   if $help;
 		} else {
 		die("\n[*] ERROR. please provide a reasonable keyword or organization. Use -h for help \n\n");
 	}
+
+#operate on keyword to improve search results
+
+	
 
 #check to make sure the sleep time is valid
 	print "[*] Validating sleep time ...\n";
