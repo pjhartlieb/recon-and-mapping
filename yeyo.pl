@@ -164,7 +164,7 @@ help()                   if $help;
 		push (@url, $link->url_abs);
 	}
 	my @uniq_url = uniq(@url);													#remove duplicate URLs
-	print "[*] " . scalar @uniq_url . " unique links to human targets and additional results pages were found on the first page \n";
+	print "[*] " . scalar @uniq_url . " unique links to users and additional results pages were found on the first page \n";
 	
 ##extract the link to *all* pulbic profiles tied to the keyword results and sleep
 	my $all_in;
@@ -212,7 +212,7 @@ help()                   if $help;
 	}
 	
 	my @uniq_target_url = uniq(@target_url);													#remove duplicates from target array
-	print "[*] " . scalar @uniq_target_url . " Links to human targets found \n";
+	print "[*] " . scalar @uniq_target_url . " Links to users found \n";
 	
 	my @uniq_page_url = uniq(@page_url);														#remove duplicates from additional pages of results
 	print "[*] " . scalar @uniq_page_url . " Links to additional results pages found \n";
@@ -223,7 +223,7 @@ help()                   if $help;
 	my  @humint_targets;						#initialize array to store results
 	my	$humint_targets;						#initialize variable to count results
 
-	print "[*] Harvesting human target data with sleep times between 0 and " . $range . " seconds between records \n";
+	print "[*] Harvesting user data with sleep times between 0 and " . $range . " seconds between records \n";
 	print "\n";
 	for my $uniq_target_url (@uniq_target_url) {
 		my $connection_4 = eval {
@@ -302,7 +302,7 @@ help()                   if $help;
 	}	#close for loop 
 
 	$humint_targets = scalar @humint_targets;
-	print "[*] " . $humint_targets . " suitable human targets found to date \n";
+	print "[*] " . $humint_targets . " suitable users found to date \n";
 	print "\n";
 
 ## retrieve target data from all other pages of results
@@ -342,7 +342,7 @@ for my $uniq_page_url (@uniq_page_url) {
 				}
 			
 				my @uniq_target_url_i = uniq(@target_url_i);													#remove duplicates from target array
-				print "[*] " . scalar @uniq_target_url_i . " Links to human targets found \n";
+				print "[*] " . scalar @uniq_target_url_i . " Links to users found \n";
 			
 				my @uniq_page_url_i = uniq(@page_url_i);														#remove duplicates from additional pages of results
 				my $new_page_count=0;																			#this is a counter to check for new results pages
@@ -358,7 +358,7 @@ for my $uniq_page_url (@uniq_page_url) {
 				print "\n";
 			
 				##parse out the targets on the current page
-				print "[*] Harvesting human target data with sleep times between 0 and " . $range . " seconds between records \n";
+				print "[*] Harvesting user data with sleep times between 0 and " . $range . " seconds between records \n";
 				print "\n";
 					for my $uniq_target_url_i (@uniq_target_url_i) {
 						my $connection_6 = eval {
@@ -439,7 +439,7 @@ for my $uniq_page_url (@uniq_page_url) {
 					}	#close for loop for iterating through individual targets
 			
 				$humint_targets = scalar @humint_targets;
-				print "[*] " . $humint_targets . " suitable human targets found to date \n";
+				print "[*] " . $humint_targets . " suitable users found to date \n";
 				print "\n";
 
 				} else {
@@ -461,7 +461,7 @@ osint_yatedo_scraper.pl By pjhartlieb at http://blogspot.pjhartlieb.com
 		Usage: perl osint_yatedo_sctaper.pl [OPTIONS] www.yatedo.com <keyword>
 
 Overview:
-		Query Yatedo for human targets in a specific organization and display the
+		Query Yatedo for users in a specific organization and display the
 		results in csv format. 
 
 Options:
