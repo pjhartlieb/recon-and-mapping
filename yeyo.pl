@@ -220,8 +220,8 @@ help()                   if $help;
 	
 ##retrieve and scrape data for the first page of results
 
-	my  @humint_targets;						#initialize array to store results
-	my	$humint_targets;						#initialize variable to count results
+	my  @humint_users;						#initialize array to store results
+	my	$humint_users;						#initialize variable to count results
 
 	print "[*] Harvesting user data with sleep times between 0 and " . $range . " seconds between records \n";
 	print "\n";
@@ -289,7 +289,7 @@ help()                   if $help;
 					}
 				if ($span_org =~ m/.*($keyword).*/i) {
 					my $entry="$span_first,$span_last,$span_org,$span_role";
-					push (@humint_targets, $entry);
+					push (@humint_users, $entry);
 				}
 				
 				my $random_number_2 = int(rand($range));
@@ -301,8 +301,8 @@ help()                   if $help;
         }	#close if/then for eva statement error catching
 	}	#close for loop 
 
-	$humint_targets = scalar @humint_targets;
-	print "[*] " . $humint_targets . " suitable users found to date \n";
+	$humint_users = scalar @humint_users;
+	print "[*] " . $humint_users . " suitable users found to date \n";
 	print "\n";
 
 ## retrieve target data from all other pages of results
@@ -357,7 +357,7 @@ for my $uniq_page_url (@uniq_page_url) {
 				print "[*] " . $new_page_count . " Links to additonal results pages found \n";					#print the total number of new pages found
 				print "\n";
 			
-				##parse out the targets on the current page
+				##parse out the users on the current page
 				print "[*] Harvesting user data with sleep times between 0 and " . $range . " seconds between records \n";
 				print "\n";
 					for my $uniq_target_url_i (@uniq_target_url_i) {
@@ -426,7 +426,7 @@ for my $uniq_page_url (@uniq_page_url) {
 								}
 								if ($span_org_i =~ m/.*($keyword).*/i) {
 									my $entry="$span_first_i,$span_last_i,$span_org_i,$span_role_i";
-									push (@humint_targets, $entry);
+									push (@humint_users, $entry);
 								}
 						
 								my $random_number_2 = int(rand($range));
@@ -436,10 +436,10 @@ for my $uniq_page_url (@uniq_page_url) {
 			        			print ("[*] ERROR. Could not retrieve " . $uniq_target_url_i . " Moving on. \n");
 			    			}	#close if/then for mech success
 			    		}	#close if/then for eval statement catching errors (connection 6)
-					}	#close for loop for iterating through individual targets
+					}	#close for loop for iterating through individual users
 			
-				$humint_targets = scalar @humint_targets;
-				print "[*] " . $humint_targets . " suitable users found to date \n";
+				$humint_users = scalar @humint_users;
+				print "[*] " . $humint_users . " suitable users found to date \n";
 				print "\n";
 
 				} else {
@@ -450,7 +450,7 @@ for my $uniq_page_url (@uniq_page_url) {
 
 print "[*] candidate user list \n";
 print "\n";
-print join("\n", @humint_targets), "\n";
+print join("\n", @humint_users), "\n";
 print "\n";
 
 sub help {
