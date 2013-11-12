@@ -448,7 +448,7 @@ for my $uniq_page_url (@uniq_page_url) {
     }	#close if/then for eval statement catching errors (connection 5)
 }	#close ouer for loop for results pages
 
-print "[*] candidate target list \n";
+print "[*] candidate user list \n";
 print "\n";
 print join("\n", @humint_targets), "\n";
 print "\n";
