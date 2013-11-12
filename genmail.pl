@@ -293,9 +293,9 @@ print "[*]	Have a nice day\n\n";
 sub help {
   print <<EOHELP;
   
-email_generation_v003.pl By pjhartlieb at http://blogspot.pjhartlieb.com
+genmail.pl By pjhartlieb at http://blogspot.pjhartlieb.com
 
-		Usage: perl email_generation_v002.pl -f <filename> -d <domain>
+		Usage: perl genmail.pl -f <filename> -d <domain>
 
 Overview:
 		Generate candidate email addresses for a specific domain given 
@@ -310,7 +310,7 @@ Options:
 
 Example:
 
-		perl email_generation_v002.pl -f usernames.txt -d google.com
+		perl genmail.pl -f usernames.txt -d google.com
 	 
 EOHELP
 exit;
