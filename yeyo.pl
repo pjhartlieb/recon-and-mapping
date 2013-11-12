@@ -11,6 +11,17 @@
 ##
 ############################################################
 
+#DISCLAIMER [1]
+
+# This script is intended for educational purposes only.  
+# I will not be held liable for a third party's use (or mis-use) of this information in any way.  
+# Readers, end-users, and downloaders of content are responsible for their own actions.  
+# Readers, end-users, and downloaders of content agree not to use content provided for illegal actions.  
+# Content is provided as an educational resource for security researchers and penetration testers.
+
+#REFERENCE
+#http://www.blackhatlibrary.net/Security101_-_Blackhat_Techniques_-_Hacking_Tutorials_-_Vulnerability_Research_-_Security_Tools:General_disclaimer
+
 # This script will scrape yatedo search results for a specific company
 ## TBD
 ## **need** to catch errors using eval.  right now it will shit the bed if mech cannot connect DONE! (I think)
