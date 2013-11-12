@@ -2,7 +2,7 @@
 
 ############################################################
 ##
-##		genmail.pl
+##		genmail.pl v0.0.4
 ##		
 ##		Generates email addresses for a specific domain
 ##		given a list of non-uniform usernames.

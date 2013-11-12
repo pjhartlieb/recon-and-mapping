@@ -13,6 +13,7 @@
 
 #DISCLAIMER [1]
 
+# This script violates the ToS for www.yatedo.com and may get you banned.  
 # This script is intended for educational purposes only.  
 # I will not be held liable for a third party's use (or mis-use) of this information in any way.  
 # Readers, end-users, and downloaders of content are responsible for their own actions.  
