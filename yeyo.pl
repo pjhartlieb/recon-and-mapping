@@ -473,8 +473,8 @@ Options:
 
 Example:
 
-		perl osint_yatedo_scraper.pl -keyword walmart -sleep 5
-		perl osint_yatedo_scraper.pl -keyword "five guys" -sleep 5
+		perl yeyo.pl -keyword walmart -sleep 5
+		perl yeyo.pl -keyword "five guys" -sleep 5
 	 
 EOHELP
 exit;
