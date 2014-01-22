@@ -473,7 +473,7 @@ Options:
 
 Example:
 
-		perl yeyo.pl -keyword walmart -sleep 5
+		perl yeyo.pl -keyword walmart -sleep 17
 		perl yeyo.pl -keyword "five guys" -sleep 5
 	 
 EOHELP
