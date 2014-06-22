@@ -260,7 +260,7 @@ help()                   if $help;
 					_tag => "span",
 					class => "family-name lastname",
 					);
-					if(length($span_f) != 0) {
+					if(length($span_l) != 0) {
 						$span_last = $span_l->as_text;
 					} else {
 						$span_last = "undef";
