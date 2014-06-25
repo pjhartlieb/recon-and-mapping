@@ -266,6 +266,16 @@ help()                   if $help;
 						$span_last = "undef";
 					}
 
+				my $title;
+				my ($title_l) = $tree_iter->look_down(	#extract lastname and print as text
+					_tag => "title",
+					);
+					if(length($title_l) != 0) {
+						$title = $title_l->as_text;
+					} else {
+						$title = "undef";
+					}
+
 				my $span_org;
 				my ($span_o) = $tree_iter->look_down(	#extract organization and print as text
 					_tag => "span",
@@ -287,8 +297,9 @@ help()                   if $help;
 					} else {
 						$span_role = "undef|past-role";
 					}
-				if ($span_org =~ m/.*($keyword).*/i) {
-					my $entry="$span_first,$span_last,$span_org,$span_role";
+				
+				if ($span_org =~ m/.*($keyword).*/i or $title=~ m/.*($keyword).*/i) {
+					my $entry="$span_first | $span_last | $title | $span_org | $span_role";
 					push (@humint_users, $entry);
 				}
 				
@@ -401,6 +412,16 @@ for my $uniq_page_url (@uniq_page_url) {
 									$span_last_i = "undef";
 								}
 
+								my $title_i;
+								my ($title_l_i) = $tree_iter_i->look_down(	#extract lastname and print as text
+									_tag => "title",
+								);
+								if(length($title_l_i) != 0) {
+									$title_i = $title_l_i->as_text;
+								} else {
+									$title_i = "undef";
+								}
+
 								my $span_org_i;
 								my ($span_o_i) = $tree_iter_i->look_down(	#extract organization and print as text
 									_tag => "span",
@@ -424,8 +445,8 @@ for my $uniq_page_url (@uniq_page_url) {
 								} else {
 									$span_role_i = "undef|past-role";
 								}
-								if ($span_org_i =~ m/.*($keyword).*/i) {
-									my $entry="$span_first_i,$span_last_i,$span_org_i,$span_role_i";
+								if ($span_org_i =~ m/.*($keyword).*/i or $title_i=~ m/.*($keyword).*/i) {
+									my $entry="$span_first_i | $span_last_i | $title_i | $span_org_i | $span_role_i";
 									push (@humint_users, $entry);
 								}
 						
@@ -450,6 +471,7 @@ for my $uniq_page_url (@uniq_page_url) {
 
 print "[*] candidate user list \n";
 print "\n";
+print "First | Last | Title | Organization | Role\n\n";
 print join("\n", @humint_users), "\n";
 print "\n";
 
