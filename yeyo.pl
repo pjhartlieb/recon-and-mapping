@@ -468,7 +468,7 @@ Options:
 	
 		-help		This screen.
 		-keyword	The keyword/organization that will be submitted with the Yatedo query
-		-proxy      Specifies the open web proxy
+		-proxy 		Specifies the open web proxy
 		-sleep		The range in seconds that will be used to generate a random delay to 
 				avoid lockout. The default value is 10.
 
