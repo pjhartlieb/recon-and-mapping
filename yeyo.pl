@@ -456,9 +456,9 @@ print "\n";
 sub help {
   print <<EOHELP;
   
-osint_yatedo_scraper.pl By pjhartlieb at http://blogspot.pjhartlieb.com
+yeyo.pl By pjhartlieb at http://blogspot.pjhartlieb.com
 
-		Usage: perl osint_yatedo_sctaper.pl [OPTIONS] www.yatedo.com <keyword>
+		Usage: perl yeyo.pl [options] 
 
 Overview:
 		Query Yatedo for users in a specific organization and display the
@@ -467,14 +467,16 @@ Overview:
 Options:
 	
 		-help		This screen.
-		-keyword	This is the keyword/organization that will be submitted with the Yatedo query
-		-sleep		This is the range in seconds that will be used to generate a random delay to 
+		-keyword	The keyword/organization that will be submitted with the Yatedo query
+		-proxy      Specifies the open web proxy
+		-sleep		The range in seconds that will be used to generate a random delay to 
 				avoid lockout. The default value is 10.
 
 Example:
 
 		perl yeyo.pl -keyword walmart -sleep 17
 		perl yeyo.pl -keyword "five guys" -sleep 5
+		perl yeyo.pl -keyword benchmade -proxy 10.10.10.10
 	 
 EOHELP
 exit;
