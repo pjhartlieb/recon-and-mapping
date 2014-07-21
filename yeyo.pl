@@ -237,69 +237,58 @@ help()                   if $help;
 
 			if ($mech->success) {
 	      
-				my $scraping = $mech-> content;		#response()->decoded_content();
+				my $scraping = $mech-> content;				#response()->decoded_content();
 				
 				#create trees to walk the content of the target pages 
-				my $tree_iter = HTML::Tree->new(); 		#create new tree object
+				my $tree_iter = HTML::Tree->new(); 			#create new tree object
 			
-				$tree_iter->parse($scraping);			#populate tree object with parsed content
-				
-				my $span_first;
-				my ($span_f) = $tree_iter->look_down(	#extract firstname and print as text
-					_tag => "span",
-					class => "given-name firstname",
-					);
-					if(length($span_f) != 0) {
-						$span_first = $span_f->as_text;
-					} else {
-						$span_first = "undef";
-					}
-				
-				my $span_last;
-				my ($span_l) = $tree_iter->look_down(	#extract lastname and print as text
-					_tag => "span",
-					class => "family-name lastname",
-					);
-					if(length($span_l) != 0) {
-						$span_last = $span_l->as_text;
-					} else {
-						$span_last = "undef";
-					}
+				$tree_iter->parse($scraping);				#populate tree object with parsed content
 
 				my $title;
-				my ($title_l) = $tree_iter->look_down(	#extract lastname and print as text
+				my ($title_l) = $tree_iter->look_down(	#extract metadata from the title tag at the top of the page
 					_tag => "title",
 					);
-					if(length($title_l) != 0) {
-						$title = $title_l->as_text;
+					if( defined $title_l ) {
+						$title= $title_l->as_text;
 					} else {
 						$title = "undef";
 					}
 
-				my $span_org;
-				my ($span_o) = $tree_iter->look_down(	#extract organization and print as text
-					_tag => "span",
-					class => "org",
+				my $div_name;
+				my ($div_n) = $tree_iter->look_down(		#extract name
+					_tag => "div",
+					class => "p_name_header",
 					);
-					if(defined ($span_o)) {
-						$span_org = $span_o->as_text;
+					if( defined $div_n ) {
+						$div_name = $div_n->as_text;
 					} else {
-						$span_org = "undef|past-employer";
+						$div_name = "undef";
 					}
 				
-				my $span_role;
-				my ($span_r) = $tree_iter->look_down(	#extract role and print as text
-					_tag => "span",
-					class => "role",
+				my $div_role;
+				my ($div_r) = $tree_iter->look_down(		#extract role information
+					_tag => "div",
+					class => "p_headline_header ",
 					);
-					if(defined ($span_r)) {
-						$span_role = $span_r->as_text;
+					if( defined $div_r ) {
+						$div_role = $div_r->as_text;
 					} else {
-						$span_role = "undef|past-role";
+						$div_role = "undef";
+					}
+
+				my $div_location;
+				my ($div_l) = $tree_iter->look_down(		#extract location
+					_tag => "div",
+					class => "p_location_header ",
+					);
+					if( defined $div_l ) {
+						$div_location = $div_l->as_text;
+					} else {
+						$div_location = "undef";
 					}
 				
-				if ($span_org =~ m/.*($keyword).*/i or $title=~ m/.*($keyword).*/i) {
-					my $entry="$span_first | $span_last | $title | $span_org | $span_role";
+				if ($div_role =~ m/.*($keyword).*/i or $title=~ m/.*($keyword).*/i) {
+					my $entry="$div_name | $div_role | $div_location";
 					push (@humint_users, $entry);
 				}
 				
@@ -383,70 +372,59 @@ for my $uniq_page_url (@uniq_page_url) {
 
 							if ($mech->success) {
 
-								my $scraping_i = $mech->content;		#response()->decoded_content();
+								my $scraping_i = $mech->content;			#response()->decoded_content();
 							
 								#create trees to walk the content of the target pages 
-								my $tree_iter_i = HTML::Tree->new(); #create new tree object
+								my $tree_iter_i = HTML::Tree->new(); 		#create new tree object
 						
-								$tree_iter_i->parse($scraping_i);		#populate tree object with parsed content
+								$tree_iter_i->parse($scraping_i);			#populate tree object with parsed content
 							
-								my $span_first_i;
-								my ($span_f_i) = $tree_iter_i->look_down(	#extract firstname and print as text
-									_tag => "span",
-									class => "given-name firstname",
-									);
-								if(length($span_f_i) != 0) {
-									$span_first_i = $span_f_i->as_text;
-								} else {
-									$span_first_i = "undef";
-								}
-							
-								my $span_last_i;
-								my ($span_l_i) = $tree_iter_i->look_down(	#extract lastname and print as text
-									_tag => "span",
-									class => "family-name lastname",
-									);
-								if(length($span_l_i) != 0) {
-									$span_last_i = $span_l_i->as_text;
-								} else {
-									$span_last_i = "undef";
-								}
-
-								my $title_i;
-								my ($title_l_i) = $tree_iter_i->look_down(	#extract lastname and print as text
+								
+								my $title_i;								#extract metadata from the title tag at the top of the page
+								my ($title_l_i) = $tree_iter_i->look_down(	
 									_tag => "title",
 								);
-								if(length($title_l_i) != 0) {
+								if( defined $title_l_i ) {
 									$title_i = $title_l_i->as_text;
 								} else {
 									$title_i = "undef";
 								}
 
-								my $span_org_i;
-								my ($span_o_i) = $tree_iter_i->look_down(	#extract organization and print as text
-									_tag => "span",
-									class => "org",
+								my $div_name_i;
+								my ($div_n_i) = $tree_iter_i->look_down(	#extract name
+									_tag => "div",
+									class => "p_name_header",
 									);
-								#if(length($span_o_i) != 0) {
-								if(defined ($span_o_i)) {
-									$span_org_i = $span_o_i->as_text;
+								if( defined $div_n_i ) {
+									$div_name_i = $div_n_i->as_text;
 								} else {
-									$span_org_i = "undef|past-employer";
+									$div_name_i = "undef";
 								}
 							
-								my $span_role_i;
-								my ($span_r_i) = $tree_iter_i->look_down(	#extract role and print as text
-									_tag => "span",
-									class => "role",
+								my $div_role_i;
+								my ($div_r_i) = $tree_iter_i->look_down(	#extract role
+									_tag => "div",
+									class => "p_headline_header ",
 									);
-								if(defined ($span_r_i)) {	
-								#if(length($span_r_i) != 0) {
-									$span_role_i = $span_r_i->as_text;
+								if( defined $div_r_i ) {
+									$div_role_i = $div_r_i->as_text;
 								} else {
-									$span_role_i = "undef|past-role";
+									$div_role_i = "undef";
 								}
-								if ($span_org_i =~ m/.*($keyword).*/i or $title_i=~ m/.*($keyword).*/i) {
-									my $entry="$span_first_i | $span_last_i | $title_i | $span_org_i | $span_role_i";
+
+								my $div_location_i;
+								my ($div_l_i) = $tree_iter_i->look_down(		#extract location
+									_tag => "div",
+									class => "p_location_header ",
+									);
+								if( defined $div_l_i ) {
+									$div_location_i = $div_l_i->as_text;
+								} else {
+									$div_location_i = "undef";
+								}
+
+								if ($div_role_i =~ m/.*($keyword).*/i or $title_i=~ m/.*($keyword).*/i) {
+									my $entry="$div_name_i | $div_role_i | $div_location_i";
 									push (@humint_users, $entry);
 								}
 						
@@ -471,7 +449,7 @@ for my $uniq_page_url (@uniq_page_url) {
 
 print "[*] candidate user list \n";
 print "\n";
-print "First | Last | Title | Organization | Role\n\n";
+print "Name | Role | Location\n\n";
 print join("\n", @humint_users), "\n";
 print "\n";
 
