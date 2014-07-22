@@ -2,7 +2,7 @@
 
 ############################################################
 ##
-##		yeyo.pl v0.0.4
+##		yeyo.pl v0.0.5
 ##		
 ##		Quickly gather contacts for a target organization or
 ##		keyword.
@@ -49,17 +49,21 @@ use Getopt::Long;
 
 #global variables
 my $target_site = "www.yatedo.com";
+my $proxy_test = "http://www.walmart.com";
+my $canary;
 
 # command line options
 my $help;
-my $keyword;  #keyword or target organization
-my $range=10; #range for random sleep times
+my $keyword;  	#keyword or target organization
+my $range=10; 	#range for random sleep times
+my $proxy_ip;	#user provided list of web proxies
 
 # processing command line options
 my $result = GetOptions (	
 			'help'		=> \$help,
 			'keyword=s'	=> \$keyword,
 			'sleep:i'	=> \$range,
+			'proxy=s'	=> \$proxy_ip,
 			); 
 			
 help()                   if $help;
@@ -72,10 +76,38 @@ help()                   if $help;
 		die("\n[*] ERROR. please provide a reasonable keyword or organization. Use -h for help \n\n");
 	}
 
-#operate on keyword to improve search results
+#validate, read-in, and analyze the proxy ip
 
+	#Verify if a proxy ip is provided
+	if ( defined $proxy_ip ) {
+		print "[*] Validating and analyzing proxy ip ... \n";
+
+	#Verify that the the ip is well formed
+		if ( $proxy_ip =~ /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\:\d{1,5}/ ) {
+			print "\t[*] " . $proxy_ip . " is well formed\n";
+
+	#Test proxy connection
+			print "\t[*] Testing " . $proxy_ip . "\n";
+			my $walmart = WWW::Mechanize->new (timeout=>30);
+			$walmart->proxy(['http'], "http://" . $proxy_ip);
+			$walmart->agent( 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)' );
+			my $connection_1 = eval {						#make connection and catch any "GET" errors
+    			$walmart->get( $proxy_test );
+    			1
+			};
 	
-
+			if (! $connection_1) {
+    			die("\t[*] ERROR. Unable to connect through proxy. \n\n");
+    		} else {
+    			$canary=1;																	#Canary that gets set when the proxy passes all tests
+				print "\t[*] Test page retrieved.  Proxy appears to be up. \n";
+				print "\n";    	
+    		}
+   		} else {
+   			 die("\t[*] ERROR.  Please format proxy correctly. ( eg. w.x.y.z:port# )\n\n");
+    	}
+    }
+	
 #check to make sure the sleep time is valid
 	print "[*] Validating sleep time ...\n";
 	if ( $range >= 0 ) {
@@ -100,11 +132,15 @@ help()                   if $help;
 	
 ## set user-agent
 	$mech->agent( 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)' );
-	
+
+## set the proxy
+	if ( $canary == 1) {
+		$mech->proxy(['http'], "http://" . $proxy_ip);
+	}
+
 ## retrieve frontpage
 	print "\n";
 	print "[*] Retrieving frontpage for " . $target_site . " \n";
-	#$mech->get( $frontpage );
 	
 	my $connection_1 = eval {						#make connection and catch any "GET" errors
     	$mech->get( $frontpage );
@@ -239,13 +275,13 @@ help()                   if $help;
 	      
 				my $scraping = $mech-> content;				#response()->decoded_content();
 				
-				#create trees to walk the content of the target pages 
+															#create trees to walk the content of the target pages 
 				my $tree_iter = HTML::Tree->new(); 			#create new tree object
 			
 				$tree_iter->parse($scraping);				#populate tree object with parsed content
 
 				my $title;
-				my ($title_l) = $tree_iter->look_down(	#extract metadata from the title tag at the top of the page
+				my ($title_l) = $tree_iter->look_down(		#extract metadata from the title tag at the top of the page
 					_tag => "title",
 					);
 					if( defined $title_l ) {
@@ -468,7 +504,7 @@ Options:
 	
 		-help		This screen.
 		-keyword	The keyword/organization that will be submitted with the Yatedo query
-		-proxy 		Specifies the open web proxy
+		-Proxy 		Specifies the open web proxy
 		-sleep		The range in seconds that will be used to generate a random delay to 
 				avoid lockout. The default value is 10.
 
