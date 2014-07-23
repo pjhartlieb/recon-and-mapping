@@ -55,7 +55,7 @@ my $canary;
 # command line options
 my $help;
 my $keyword;  	#keyword or target organization
-my $range=10; 	#range for random sleep times
+my $range; 		#range for random sleep times
 my $proxy_ip;	#user provided list of web proxies
 
 # processing command line options
@@ -69,7 +69,7 @@ my $result = GetOptions (
 help()                   if $help;
 
 #check to make sure the keyword is provided
-	print "\n[*] Validating keyword/organization ...\n";
+	print "\n[*] Validating keyword/organization ...\n\n";
 	if ( defined $keyword ) {
 		# do nothing
 		} else {
@@ -100,8 +100,7 @@ help()                   if $help;
     			die("\t[*] ERROR. Unable to connect through proxy. \n\n");
     		} else {
     			$canary=1;																	#Canary that gets set when the proxy passes all tests
-				print "\t[*] Test page retrieved.  Proxy appears to be up. \n";
-				print "\n";    	
+				print "\t[*] Test page retrieved.  Proxy appears to be up. \n\n";    	
     		}
    		} else {
    			 die("\t[*] ERROR.  Please format proxy correctly. ( eg. w.x.y.z:port# )\n\n");
@@ -109,18 +108,20 @@ help()                   if $help;
     }
 	
 #check to make sure the sleep time is valid
-	print "[*] Validating sleep time ...\n";
-	if ( $range >= 0 ) {
-		# do nothing
+	if ( defined $range ) {
+		print "[*] Validating sleep time ...\n";
+		if ( $range >= 0 ) {
+			print "\t[*] Sleep times will be between 0 and " . $range . " seconds\n\n";
 		} else {
 		die("\n[*] ERROR. please provide a reasonable sleep time. Use -h for help \n\n");
+		} 
+	} else {
+		$range=10;
+		print "[*] Sleep times will be between 0 and " . $range . " seconds\n\n";
 	}
 
 #read out the keyword
-	print "[*] Keyword entered \"$keyword\". \n";
-
-#read out the sleep time
-	print "[*] Sleep times will be between 0 and $range. \n";
+	print "[*] Keyword entered \"$keyword\". \n\n";
 
 #request frontpage
 ## initialize variables
@@ -139,7 +140,6 @@ help()                   if $help;
 	}
 
 ## retrieve frontpage
-	print "\n";
 	print "[*] Retrieving frontpage for " . $target_site . " \n";
 	
 	my $connection_1 = eval {						#make connection and catch any "GET" errors
