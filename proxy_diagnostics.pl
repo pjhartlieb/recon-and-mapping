@@ -10,6 +10,11 @@
 ##
 ############################################################
 
+#TBD
+# Add small help file
+# Verify list of proxies for correct format
+# Add command line options for the proxy list file and output filename
+
 #import modules
 use HTML::Element;
 use WWW::Mechanize;
