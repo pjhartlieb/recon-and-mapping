@@ -26,7 +26,9 @@ my @good_proxies;
 my @bad_proxies;
 my $frontpage = "http://www.walmart.com";
 
-#open file from "Hide-My-Ass" distro - place contents in an array - count the number of proxies available
+#open file - place contents in an array - count the number of proxies available
+#file is assumed to be in the same directory that the script is run from
+#filename is assumed to be "proxy_list.txt"
 my $proxy_list = "proxy_list.txt";
 open (F0, $proxy_list) || die "Could not open $proxy_list: $!\n";
 my @f0 = <F0>;
