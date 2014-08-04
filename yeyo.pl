@@ -50,12 +50,12 @@ use Getopt::Long;
 #global variables
 my $target_site = "www.yatedo.com";
 my $proxy_test = "http://www.walmart.com";
-my $canary;
+my $canary = 0;
 
 # command line options
 my $help;
-my $keyword;	#keyword or target organization
-my $range;	#range for random sleep times
+my $keyword;  	#keyword or target organization
+my $range; 		#range for random sleep times
 my $proxy_ip;	#user provided list of web proxies
 
 # processing command line options
