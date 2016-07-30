@@ -1,8 +1,27 @@
 #!/usr/bin/python
 
+############################################################
+##
+##		proxget.py v0.0.1
+##		
+##		Proxy-based document retrieval. An excuse to learn python and urllib2
+##		
+##		by pjhartlieb @ black lantern security group 
+##
+############################################################
+
+#REFERENCE
+# [1] http://www.blackhatlibrary.net/Security101_-_Blackhat_Techniques_-_Hacking_Tutorials_-_Vulnerability_Research_-_Security_Tools:General_disclaimer
+
+#DISCLAIMER [1]
+
+# This script is intended for educational purposes only.  
+# I will not be held liable for a third party's use (or mis-use) of this information in any way.  
+# Readers, end-users, and downloaders of content are responsible for their own actions.  
+# Readers, end-users, and downloaders of content agree not to use content provided for illegal actions.  
+# Content is provided as an educational resource for security researchers and penetration testers.
+
 #tbd
-## reduce the timeout value DONE
-## add error handling to document request DONE
 ## add arg parse so URL and proxy list files can be passed on the cmd line
 ## how will proxy be selected from hot list
 ## how will new proxy be selected if old proxy stops working
