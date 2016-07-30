@@ -23,7 +23,7 @@ def grab( url ): #retrieves and returns the target resource
 	##add header
 	request.add_header('User-Agent', user_agent)
 	## create opener(s)
-	proxy_handler = urllib2.ProxyHandler({'http': 'http://117.169.4.43:80'})
+	proxy_handler = urllib2.ProxyHandler({'http': 'http://:80'})
 	opener = urllib2.build_opener(proxy_handler)
 	##install opener
 	urllib2.install_opener(opener)
