@@ -29,7 +29,7 @@ use LWP::Simple;
 #initialize variables
 my @good_proxies;
 my @bad_proxies;
-my $frontpage = "http://dhl.dhhq.health.mil";
+my $frontpage = "http://www.cnn.com";
 
 #open file - place contents in an array - count the number of proxies available
 #file is assumed to be in the same directory that the script is run from
