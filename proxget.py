@@ -23,13 +23,13 @@
 
 # tbd
 ## add arg parse so URL and proxy list files can be passed on the cmd line
-## how will new proxy be selected if old proxy stops working
-## fix mop-up
+## must be able to select http *or* https proxy depending on what the url is
 
 import urllib2
 import socket
 import errno
 import os
+import ssl
 
 def file_ingest( url_list_file ): #parses file containing list of URLs and returns a list
 	#write URLs to a python list
@@ -49,18 +49,21 @@ def proxy_test ( proxy_candidate ): #tests a candidate proxy from list and retur
 	#build request
 	returnCode=None
 	user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
-	test_url = "http://www.benchmade.com"
+	test_url = "https://www.stackoverflow.com"
+	ctx = ssl.create_default_context()
+	ctx.check_hostname = False
+	ctx.verify_mode = ssl.CERT_NONE
 	request = urllib2.Request(test_url)
 	##add header
 	request.add_header('User-Agent', user_agent)
 	## create opener(s)
-	proxy_handler = urllib2.ProxyHandler({'http': proxy_candidate})
-	opener = urllib2.build_opener(proxy_handler)
+	proxy_handler = urllib2.ProxyHandler({'https': proxy_candidate})
+	opener = urllib2.build_opener(urllib2.HTTPSHandler(context=ctx), proxy_handler)
 	##install opener
 	urllib2.install_opener(opener)
 	#make request
 	try: 
-		testResult = urllib2.urlopen(request, timeout=8)			
+		testResult = urllib2.urlopen(request, timeout=12)			
 	except urllib2.URLError, e:
 		if hasattr(e, 'reason'):
 			print '\t\tServer could not be reached'
@@ -83,29 +86,39 @@ def proxy_test ( proxy_candidate ): #tests a candidate proxy from list and retur
 		return;
 
 def select_proxy ( candidate_proxies ):
-	# select candidate from array
+	# verify that there are candidates in the array
+	# select candidate from raw array
 	# remove candidate from array
-	# send modified array back to caller
+	# send modified array (proxyPool) back to caller
 	selectProxy = None
 	if len(candidate_proxies) >= 1:
 		selectProxy = candidate_proxies.pop(0)
 		proxyPool = candidate_proxies
 	else:
-		print '\t No more proxies to select from'
+		print '\t... No more proxies to select from'
+		#selectProxy = '0.0.0.0'
+		proxyPool = None
+		print
 	return selectProxy,proxyPool;
 
-def find_proxy ( proxy_list ):
-	# [*] Find proxy
+def find_proxy ( raw_proxy_list ):
+	# continue to submit and test proxies until a hot proxy is found
+	# once found return the hot proxy and the remaining candidates to the caller
 	print '[*] finding a hot proxy'
 	hotProxy=None
-	while hotProxy == None:
-		selectProxy, proxyPool = select_proxy(proxyList)
+	proxyPool=raw_proxy_list
+	while hotProxy == None and len(proxyPool) != 0:
+		selectProxy, proxyPool = select_proxy(raw_proxy_list)
 		print '\t\t... trying %s' %selectProxy
 		hotProxy = proxy_test(selectProxy)
 		print
 	else:
-		print '\t\t... %s is hot' %hotProxy
-		print
+		if hotProxy != None:
+			print '\t\t... %s is hot' %hotProxy
+			print
+		else:
+			print'\t\t ... there are no remaining proxies to select from'
+			print
 	return hotProxy, proxyPool
 
 def grab( url, proxy ): #retrieves and returns a target resource
@@ -114,16 +127,22 @@ def grab( url, proxy ): #retrieves and returns a target resource
 	#build request
 	user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
 	request = urllib2.Request(url)
+	## create ssl context to ignore ssl cert error
+	ctx = ssl.create_default_context()
+	ctx.check_hostname = False
+	ctx.verify_mode = ssl.CERT_NONE
 	##add header
 	request.add_header('User-Agent', user_agent)
 	## create opener(s)
-	proxy_handler = urllib2.ProxyHandler({'http': proxy})
-	opener = urllib2.build_opener(proxy_handler)
+	proxy_handler = urllib2.ProxyHandler({'https': proxy})
+	## ssl context *must* be in the handler. if its added as an urlopen parameter
+	## it will *not* use the proxy
+	opener = urllib2.build_opener(urllib2.HTTPSHandler(context=ctx), proxy_handler)
 	##install opener
 	urllib2.install_opener(opener)
 	#make request using the installed opener
 	try:
-		capture = urllib2.urlopen(request, timeout=8)
+		capture = urllib2.urlopen(request, timeout=12)
 	except urllib2.URLError, e:
 		if hasattr(e, 'reason'):
 			print '\t\tServer could not be reached'
@@ -151,43 +170,68 @@ def plunk( docBlob, fileName ): #writes the target resource to a file on disk
 
 def getDocs( hotProxy, urlList ):
 	# [*] Retrieve documents
-	capturedDocs=[] #initialize array
 	orphanedDocs=[] #initialize array
+	capturedDocs=[] #initialize array
 	print '[*] retrieving documents'
-	for url in urlList:
-		print '\t... retrieving %s' %url
-		file_name = url.split('/')[-1]
-		docBlob, returnIndicator = grab(url, hotProxy)
-		if returnIndicator == 200 and docBlob is not None:
-			capturedDocs.append( url )
-			print '\t... captured %s' %url
-			print '\t... saving %s' %file_name
-			plunk(docBlob, file_name)
-			check = os.path.isfile(file_name)
-			if check:
-				print '\t... saved %s' %file_name
+	if hotProxy != None:		
+		for url in urlList:
+			print '\t... retrieving %s' %url
+			file_name = url.split('/')[-1]
+			docBlob, returnIndicator = grab(url, hotProxy)
+			if returnIndicator == 200 and docBlob is not None:
+				capturedDocs.append( url )
+				print '\t... captured %s' %url
+				print '\t... saving %s' %file_name
+				plunk(docBlob, file_name)
+				check = os.path.isfile(file_name)
+				if check:
+					print '\t... saved %s' %file_name
+				else:
+					print '\t... error saving %s' %file_name
+				print
 			else:
-				print '\t... error saving %s' %file_name
-			print
-		else:
-			orphanedDocs.append( url )
-			print '\t... *error* adding %s to orphaned list' %file_name
-			print
+				orphanedDocs.append( url )
+				print '\t... *error* adding %s to orphaned list' %file_name
+				print
+	else:
+		print '\t\t ... no available proxies cannot capture documents'
+		print
 	return capturedDocs, orphanedDocs
 
 def results ( capturedList, orphanedList ): # displays results
-	capturedCount = len(capturedDocs)
-	orphanedCount = len(orphanedDocs)
+	capturedCount = len(capturedList)
+	orphanedCount = len(orphanedList)
 	print '\t... captured %s documents' %capturedCount
 	print '\t... orphaned %s documents' %orphanedCount
 	print
 	return;
 
-#def Main ():
+def mopUp ( orphaned_Docs, captured_Docs, proxypool_Current ):
+	print '[*] executing mop-up' 
+	print
+	# check to make sure there are proxies left to work with
+	if len(proxypool_Current) >= 1:
+		hotProxy, proxypoolmopUp = find_proxy(proxypool_Current)
+		if hotProxy is not None:
+			captureddocsmopUp, orphaneddocsmopUp = getDocs(hotProxy, orphaned_Docs)
+			if captureddocsmopUp is not None:
+				r=len(captureddocsmopUp)
+				print '\t\t... %s additional documents captured' %r
+				for i in captureddocsmopUp:
+					captured_Docs.append(i)
+			else:
+				print '\t\t... no additional documents captured'
+		else:
+			print '\t\t... could not find another proxy'
+			print		
+	else:
+		print'\t\t... there are no candidate proxies left'
+		print
+	return captured_Docs, orphaneddocsmopUp;
 
+#def Main ():
 url_file = "urlList.txt"
 proxy_file = "proxyList.txt"
-mopUp = 1
 
 # [*] Read in file with URLs and return a python list
 print '[*] reading in list of target URLs'
@@ -204,35 +248,25 @@ print '\t... there are %s candidate proxies' %p
 print
 
 # [*] Find proxy
-hotProxy, proxyPool = find_proxy(proxyList)
-#print z
-#for i in proxyPool:
-#	print i
+# provides a hot proxy and the remaining pool of candidate proxy servers
+hotproxyCurrent, proxypoolCurrent = find_proxy(proxyList)
+#print hotproxyCurrent
+#print
 
 # [*] Retrieve documents
-capturedDocs, orphanedDocs = getDocs(hotProxy, urlList)
+# provides an array of URLs for captured docs and and array of URLs for missed/orphaned docs
+capturedDocs, orphanedDocs = getDocs(hotproxyCurrent, urlList)
 
 # [*] Execute mop-up
-print '[*] executing mop-up'
-print
-if len(proxyPool) >=1:
-	hotProxy, proxypoolmopUp = find_proxy(proxyPool)
-	if hotProxy is not None:
-		captureddocsmopUp, orphaneddocsmopUp = getDocs(hotProxy, orphanedDocs)
-	else:
-		print '\t... could not find another proxy'
-	if captureddocsmopUp is not None:
-		r=len(captureddocsmopUp)
-		print '\t... %s additional documents captured' %r
-		for i in captureddocsmopUp:
-			capturedDocs.append(i)
-	else:
-		print '\t... no additional documents captured'
+# one more attempt to capture documents that were missed
+if len(orphanedDocs) == 0:
+	print '[*] Results'
+	if capturedDocs is not None and orphanedDocs is not None:
+		results(capturedDocs, orphanedDocs)
+		print '[*] Have a nice day'
 else:
-	print'\t no more proxies'
-# [*] print results
-print '[*] Results'
-if capturedDocs is not None and orphanedDocs is not None:
-	results(capturedDocs, orphanedDocs)
-print '[*] Have a nice day'
-print
+	captureddocsFinal, orphaneddocsFinal = mopUp(orphanedDocs, capturedDocs, proxypoolCurrent)
+	print '[*] Results'
+	if captureddocsFinal is not None and orphaneddocsFinal is not None:
+		results(captureddocsFinal, orphaneddocsFinal)
+		print '[*] Have a nice day'
