@@ -24,6 +24,7 @@
 # tbd
 ## add arg parse so URL and proxy list files can be passed on the cmd line
 ## must be able to select http *or* https proxy depending on what the url is
+## more efficient would be if doc fails, retest proxy, it test fails, get new proxy and resume grab
 
 import urllib2
 import socket
