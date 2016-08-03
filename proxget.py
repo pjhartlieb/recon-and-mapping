@@ -6,7 +6,7 @@
 ##		
 ##		Proxy-based document retrieval. An excuse to learn python and urllib2
 ##		
-##		by pjhartlieb @ black lantern security group 
+##		by pjhartlieb
 ##
 ############################################################
 
