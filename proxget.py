@@ -275,8 +275,6 @@ def mopUp ( orphaned_Docs, captured_Docs, proxyList):
 def main():
 	url_file=''
 	proxy_file=''
-	#url_file = "urlList.txt"
-	#proxy_file = "proxyList.txt"
 
 	# [*] read in command line arguments
 	myopts, args = getopt.getopt(sys.argv[1:], "u:p:h")
