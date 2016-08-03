@@ -124,6 +124,7 @@ def find_proxy ( protocol, raw_proxy_list ):
 	#continue to submit and test proxies until a hot proxy is found
 	#once found return the hot proxy and the remaining candidates to the caller
 	hotProxy=None
+	##this prevents the function(s) from modifying the original proxyList
 	proxyPool=raw_proxy_list[:]
 	##check to see if a hotProxy has been found or if there are no more candidates
 	while hotProxy == None and len(proxyPool) != 0:
