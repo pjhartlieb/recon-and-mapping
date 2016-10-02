@@ -272,62 +272,70 @@ def mopUp ( orphaned_Docs, captured_Docs, proxyList):
 	#	print		
 	return captured_Docs, orphaneddocsmopUp;
 
+def usage():
+	print
+	print('\tUsage: %s -u <url file> -p <proxy file>' % sys.argv[0])
+	print
+	sys.exit()
+
 def main():
 	url_file=''
 	proxy_file=''
 
 	# [*] read in command line arguments
-	myopts, args = getopt.getopt(sys.argv[1:], "u:p:h")
-
-	for opt, arg in myopts:
-		if opt == '-u':
-			url_file=arg
-		elif opt == '-p':
-			proxy_file=arg
-		elif opt == '-h':
-			print
-			print('\tUsage: %s -u <url file> -p <proxy file>' % sys.argv[0])
-			print
-			sys.exit()
-		else:
-			print
-			print('\tUsage: %s -u <url file> -p <proxy file>' % sys.argv[0])
-			print
-			sys.exit()
-	
-	# [*] Read in file with URLs and return a python list
-	print
-	print colored('[*] reading in list of target URLs from %s' %url_file, 'green') 
-	urlList = file_ingest(url_file)
-	l = len(urlList)
-	print '\t... there are %s targets to retrieve' %l
-	print
-
-	# [*] Read in file with proxies and return a python list
-	print colored('[*] reading in list of proxies from %s' %proxy_file, 'green')
-	proxyList = proxy_ingest(proxy_file)
-	p = len(proxyList)
-	print '\t... there are %s candidate proxies' %p
-	print
-
-	# [*] Retrieve documents
-	# provides an array of URLs for captured docs and and array of URLs for missed/orphaned docs
-	capturedDocs, orphanedDocs = getDocs(proxyList, urlList)
-
-	# [*] Execute mop-up and print results
-	if len(orphanedDocs) == 0:
-		print colored ('[*] Results', 'green')
-		if capturedDocs is not None and orphanedDocs is not None:
-			results(capturedDocs, orphanedDocs)
-			print colored ('[*] Have a nice day', 'green')
-			print
+	if len(sys.argv) == 1:
+		usage()
 	else:
-		captureddocsFinal, orphaneddocsFinal = mopUp(orphanedDocs, capturedDocs, proxyList)
-		print colored ('[*] Results', 'green')
-		if captureddocsFinal is not None and orphaneddocsFinal is not None:
-			results(captureddocsFinal, orphaneddocsFinal)
-			print colored ('[*] Have a nice day', 'green')
-			print
+		try:
+			myopts, args = getopt.getopt(sys.argv[1:], "u:p:h")
+	
+		except getopt.GetoptError:
+			usage()
+			sys.exit(2)
+
+		for opt, arg in myopts:
+			if opt == '-u':
+				url_file=arg
+			elif opt == '-p':
+				proxy_file=arg
+			elif opt == '-h':
+				usage()
+			else:
+				usage()
+	
+		# [*] Read in file with URLs and return a python list
+		print
+		print colored('[*] reading in list of target URLs from %s' %url_file, 'green') 
+		urlList = file_ingest(url_file)
+		l = len(urlList)
+		print '\t... there are %s targets to retrieve' %l
+		print
+
+		# [*] Read in file with proxies and return a python list
+		print colored('[*] reading in list of proxies from %s' %proxy_file, 'green')
+		proxyList = proxy_ingest(proxy_file)
+		p = len(proxyList)
+		print '\t... there are %s candidate proxies' %p
+		print
+
+		# [*] Retrieve documents
+		# provides an array of URLs for captured docs and and array of URLs for missed/orphaned docs
+		capturedDocs, orphanedDocs = getDocs(proxyList, urlList)
+
+		# [*] Execute mop-up and print results
+		if len(orphanedDocs) == 0:
+			print colored ('[*] Results', 'green')
+			if capturedDocs is not None and orphanedDocs is not None:
+				results(capturedDocs, orphanedDocs)
+				print colored ('[*] Have a nice day', 'green')
+				print
+		else:
+			captureddocsFinal, orphaneddocsFinal = mopUp(orphanedDocs, capturedDocs, proxyList)
+			print colored ('[*] Results', 'green')
+			if captureddocsFinal is not None and orphaneddocsFinal is not None:
+				results(captureddocsFinal, orphaneddocsFinal)
+				print colored ('[*] Have a nice day', 'green')
+				print
 
 if __name__ == "__main__":
 	main()
