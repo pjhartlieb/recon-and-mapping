@@ -20,6 +20,8 @@ Sample query:
 
 python censys_io.py --api_id <api_id> --api_secret <secret>
                            443.https.tls.certificate.parsed.subject.common_name:/<regex>/ >> <output>.txt
+
+[REF] https://github.com/gelim/censys/blob/master/censys_io.py
 """
 
 
